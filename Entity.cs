@@ -24,6 +24,8 @@ namespace HterGame.Entity {
         }
     }
     public class Monster {
+        public static int max_3_hp = 7;
+        public static int max_1_hp = 3;
         public int HP{get; set;}
         protected int monster_type;
         protected int earth_taken = 0;
