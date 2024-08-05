@@ -20,22 +20,24 @@ namespace HterGame.Entity {
             Console.WriteLine($"Monster deal {damage} damage.");
             HP -= damage;
             monster.HP -= damage;
-
+            Console.WriteLine($"You have remain {HP} HP.");
         }
     }
     public class Monster {
-        public static int max_3_hp = 7;
-        public static int max_1_hp = 3;
+        public static int max_3_hp = 7; // max 3 consecutive monster HP
+        public static int max_1_hp = 3; // Max 1 monster HP
         public int HP{get; set;}
         protected int monster_type;
-        protected int earth_taken = 0;
+        // Taken damage of each monster for each magic
+        protected int earth_taken = 0; 
         protected int wind_taken = 0;
         protected int holy_taken = 1;
-        protected static int default_drop_chance = 20;
-        public Monster(int hp = 10) {
+        // Drop chance when die of each type of monster
+        protected static int default_drop_chance = 10;
+        public Monster(int hp = 3) {
             HP = hp;
         }
-        public bool BeingDealedDamage(int earth_damage, int wind_damage, int holy_damage, ref Hero hero) {
+        public bool BeingDealedDamage(int holy_damage, int earth_damage, int wind_damage, ref Hero hero) {
             hero.holy_magic -= holy_damage;
             hero.earth_magic -= earth_damage;
             hero.wind_magic -= wind_damage;
@@ -44,10 +46,9 @@ namespace HterGame.Entity {
                 HP = 0;
                 Console.WriteLine("You defeat a monster");
                 if((this.monster_type == 0 && Flying_Monster.DropItem()) || (this.monster_type == 1 && Ground_Monster.DropItem())) {
-                    hero.holy_magic += holy_taken * 2;
-                    hero.earth_magic += earth_taken * 2;
-                    hero.wind_magic += wind_taken * 2;
-                    Console.WriteLine($"Monster Drop: {holy_taken*2} holy magic, {earth_taken*2} earth magic, {wind_taken*2} wind magic");
+                    hero.earth_magic += earth_taken;
+                    hero.wind_magic += wind_taken;
+                    Console.WriteLine($"Monster Drop: 0 holy magic, {earth_taken} earth magic, {wind_taken} wind magic");
                 }   
                 else {
                     Console.WriteLine("Monster Drop: Nothing");
@@ -63,6 +64,10 @@ namespace HterGame.Entity {
 
         public static string GetMonsterType(Monster monster) {
             return (monster.monster_type == 1) ? "ground" : "flying";
+        }
+
+        public void DamageTakenInfo() {
+            Console.WriteLine($"Holy: {holy_taken}, Earth: {earth_taken}, Wind: {wind_taken}");
         }
     }
     public class Flying_Monster : Monster {
@@ -81,7 +86,7 @@ namespace HterGame.Entity {
                 return true;
             }
             else {
-                drop_chance += 20;
+                drop_chance += 10;
                 return false;
             }
         }
@@ -101,7 +106,7 @@ namespace HterGame.Entity {
                 return true;
             }
             else {
-                drop_chance += 20;
+                drop_chance += 10;
                 return false;
             }
         }

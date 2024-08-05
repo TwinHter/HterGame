@@ -18,14 +18,14 @@ namespace HterGame
             }
         }
     }
-    public class Game_Setting {
-        private static int trader_cycle = 3;
-        public static int GetCycleLength() {
+    public class Game_Setting { // Game Setting
+        private static int trader_cycle = 3; 
+        public static int GetCycleLength() { // Get trader cycle length
             return trader_cycle;
         }
-        public static Monster[] GenerateMonster(int ground_monsters = 5, int flying_monsters = 5) {
+        public static Monster[] GenerateMonster(int ground_monsters = 1, int flying_monsters = 1) { // Generate monster + shuffle
             Random rand = new Random();
-            Monster[] monsters = new Monster[ground_monsters + flying_monsters + 5];
+            Monster[] monsters = new Monster[ground_monsters + flying_monsters];
 
             for(int i=0; i<ground_monsters + flying_monsters; i++) {
                 int monster_hp = rand.Next(1, Monster.max_1_hp);
@@ -39,7 +39,8 @@ namespace HterGame
             rand.Shuffle(monsters);
             return monsters;
         }
-        public static bool HeroMove(ref Hero current_hero, ref Monster current_monster, ref bool isExit) {
+        public static bool HeroMove(ref Hero current_hero, ref Monster current_monster, ref bool isExit) { // User Move
+            Console.WriteLine();
             Notification.RoundInfo(current_hero, current_monster);
 
             Console.Write("Type in your choice: ");
@@ -78,7 +79,7 @@ namespace HterGame
                 return true;
             }    
         }
-        public static class Trader {
+        public static class Trader { // Trader
             public static void TraderAppear(Hero current_hero) {
                 Notification.TraderHint();
                 bool isStop = false;
@@ -148,7 +149,7 @@ namespace HterGame
         private int flying_monsters;
         private bool isExit;
         private int killed_monsters;
-        public Normal_Game_Play(int hero_power = 5, int ground_monsters = 5, int flying_monsters = 5) {
+        public Normal_Game_Play(int hero_power = 2, int ground_monsters = 2, int flying_monsters = 2) {
             this.ground_monsters = ground_monsters;
             this.flying_monsters = flying_monsters;
             this.hero = new Hero(hero_power, hero_power);
