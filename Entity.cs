@@ -9,18 +9,18 @@ namespace HterGame.Entity {
         public int holy_magic{get; set;}
         public int wind_magic{get; set;}
         public int earth_magic{get; set;}
-        public bool BeingAttacked(Monster monster) {
-            int damage = monster.HP;
+        public Hero(int hp = 5, int magic = 5) {
+            HP = hp;
+            holy_magic = magic;
+            wind_magic = magic;
+            earth_magic = magic;
+        }
+        public void BeingAttacked(ref Monster monster) {
+            int damage = Math.Min(monster.HP, HP);
             Console.WriteLine($"Monster deal {damage} damage.");
-            if(damage < HP) {
-                HP -= damage;
-                return true;
-            }
-            else {
-                HP = 0;
-                Notification.ResultNotification(false);
-                return false;
-            }
+            HP -= damage;
+            monster.HP -= damage;
+
         }
     }
     public class Monster {
@@ -35,7 +35,10 @@ namespace HterGame.Entity {
         public Monster(int hp = 10) {
             HP = hp;
         }
-        public bool BeingDealedDamage(int earth_damage, int wind_damage, int holy_damage, Hero hero) {
+        public bool BeingDealedDamage(int earth_damage, int wind_damage, int holy_damage, ref Hero hero) {
+            hero.holy_magic -= holy_damage;
+            hero.earth_magic -= earth_damage;
+            hero.wind_magic -= wind_damage;
             int total_damage = earth_damage * earth_taken + wind_damage * wind_taken + holy_damage * holy_taken;
             if(total_damage >= HP) {
                 HP = 0;
@@ -58,6 +61,9 @@ namespace HterGame.Entity {
             }
         }
 
+        public static string GetMonsterType(Monster monster) {
+            return (monster.monster_type == 1) ? "ground" : "flying";
+        }
     }
     public class Flying_Monster : Monster {
         private static int drop_chance = Monster.default_drop_chance;
