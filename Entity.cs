@@ -15,7 +15,7 @@ namespace HterGame.Entity {
             wind_magic = magic;
             earth_magic = magic;
         }
-        public void BeingAttacked(ref Monster monster) {
+        public void BeingAttacked(ref Monster monster) { // Hero attacked by monster
             int damage = Math.Min(monster.HP, HP);
             Console.WriteLine($"Monster deal {damage} damage.");
             HP -= damage;
@@ -37,12 +37,12 @@ namespace HterGame.Entity {
         public Monster(int hp = 3) {
             HP = hp;
         }
-        public bool BeingDealedDamage(int holy_damage, int earth_damage, int wind_damage, ref Hero hero) {
+        public bool BeingDealedDamage(int holy_damage, int earth_damage, int wind_damage, ref Hero hero) { // Monster attacked by hero
             hero.holy_magic -= holy_damage;
             hero.earth_magic -= earth_damage;
             hero.wind_magic -= wind_damage;
             int total_damage = earth_damage * earth_taken + wind_damage * wind_taken + holy_damage * holy_taken;
-            if(total_damage >= HP) {
+            if(total_damage >= HP) { // Hero have enough damage + drop item
                 HP = 0;
                 Console.WriteLine("You defeat a monster");
                 if((this.monster_type == 0 && Flying_Monster.DropItem()) || (this.monster_type == 1 && Ground_Monster.DropItem())) {
@@ -55,7 +55,7 @@ namespace HterGame.Entity {
                 }
                 return true;
             }
-            else {
+            else { // Hero dont have enough damage
                 Console.WriteLine($"Your damage is not enough. This monster have {HP} HP, you just deal {total_damage} damagae. Remaining Monster HP: {HP - total_damage}");
                 HP -= total_damage;
                 return false;
@@ -78,7 +78,7 @@ namespace HterGame.Entity {
             wind_taken = 1;
         }
 
-        public static bool DropItem() {
+        public static bool DropItem() { // drop item function - valid for each type of monster not each instance
             Random rand = new Random();
             int value = rand.Next(0, 100);
             if(value >= drop_chance) {

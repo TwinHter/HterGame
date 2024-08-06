@@ -1,4 +1,5 @@
 using HterGame.Entity;
+using HterGame;
 namespace HterGame.Notify {
     class Notification { // Notification when enter a game
         public static void Introduction() {
@@ -19,6 +20,12 @@ namespace HterGame.Notify {
         }
         public static void TraderHint() { // Hint each time trader appear
             Console.WriteLine("This is Trader Hint");
+            Console.WriteLine($"Every {Game_Setting.GetCycleLength()} rounds, trader will appear.");
+            Console.WriteLine("Type 1: exchange 2 earth -> 1 wind");
+            Console.WriteLine("Type 2: exchange 2 wind -> 1 earth");
+            Console.WriteLine("Type 3: exchange 3 earth -> 1 holy");
+            Console.WriteLine("Type 4: exchange 3 wind -> 1 holy");
+            Console.WriteLine("Type another number: Goodbye Trader!!!");
         }
         public static void ErrorTraderMove() { // invalid exchange with trader
             Console.WriteLine("Invalid Move - You dont have enough magic to exchange.");
@@ -28,13 +35,16 @@ namespace HterGame.Notify {
         }
         public static void KillingHint() { 
             Console.WriteLine("This is killing hint");
+            Console.WriteLine("Ground monsters are injured by earth magic and holy magic. Flying monsters are being attack by wind magic and holy magic. Each magic will make 1 damage if it can affect that monster.");
+            Console.WriteLine("If you cant kill that monsters, it will attack you with the damage equal to its remaining HP.");
+            Console.WriteLine("Type 'exit' to exit game. 'remain' to show your remain magic and HP, 'hint' for the killing and trader hint");
         }
         public static void RemainPower(Hero hero) { // Remain HP and magic of hero
            Console.WriteLine($"You have remain {hero.HP} HP, {hero.holy_magic} holy magic, {hero.earth_magic} earth magic, {hero.wind_magic} wind magic left");
         }
         public static void RoundInfo(Hero hero, Monster monster) { // Current monster's status and hero's status
             Console.WriteLine($"Current Monster have {monster.HP} HP. This monster is {Monster.GetMonsterType(monster)}");
-            monster.DamageTakenInfo();
+            // monster.DamageTakenInfo();
             RemainPower(hero);
         }
     }

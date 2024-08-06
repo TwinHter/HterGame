@@ -4,7 +4,8 @@ using HterGame.Entity;
 using HterGame.Notify;
 namespace HterGame
 {
-    static class RandomExtensions
+    
+    static class RandomExtensions // Shuffle array
     {
         public static void Shuffle<T> (this Random rng, T[] array)
         {
@@ -39,7 +40,7 @@ namespace HterGame
             rand.Shuffle(monsters);
             return monsters;
         }
-        public static bool HeroMove(ref Hero current_hero, ref Monster current_monster, ref bool isExit) { // User Move
+        public static bool HeroMove(ref Hero current_hero, ref Monster current_monster, ref bool isExit) { // User/Hero Move
             Console.WriteLine();
             Notification.RoundInfo(current_hero, current_monster);
 
@@ -57,6 +58,7 @@ namespace HterGame
                         return false;
                     case "hint":
                         Notification.KillingHint();
+                        Notification.TraderHint();
                         return false;
                     default:
                         Notification.ErrorHeroMove();
@@ -64,15 +66,19 @@ namespace HterGame
                 }
             }
             else {
-                Console.Write("Type in holy - earth - wind magic you use: ");
+                // Type in maigc hero use in this round
+                Console.Write("Type in holy - earth - wind magic you use: "); 
                 int[] magic = new int[3];
                 for(int i=0; i<3; i++) {
                     magic[i] = Convert.ToInt32(Console.ReadLine());
                 }
+                // Check Hero valid move
                 if(magic[0] > current_hero.holy_magic || magic[1] > current_hero.earth_magic || magic[2] > current_hero.wind_magic) {
                     Notification.ErrorHeroMove();
                     return false;
                 }
+
+                // Dealing damage
                 if(!current_monster.BeingDealedDamage(magic[0], magic[1], magic[2], ref current_hero)) {
                     current_hero.BeingAttacked(ref current_monster);
                 }
@@ -81,12 +87,14 @@ namespace HterGame
         }
         public static class Trader { // Trader
             public static void TraderAppear(Hero current_hero) {
-                Notification.TraderHint();
+                
+                Notification.TraderHint(); // Trader hint
                 bool isStop = false;
                 while(true) {
                     if(isStop) {
                         break;
                     }
+                    Notification.RemainPower(current_hero);
                     Console.Write("Type in your choice: ");
                     int choice = Convert.ToInt32(Console.ReadLine());
                     switch (choice)
@@ -100,6 +108,7 @@ namespace HterGame
                                 current_hero.earth_magic -= 2;
                                 current_hero.wind_magic += 1;
                             }
+                            Notification.RemainPower(current_hero);
                             break;
                         
                         case 2:
@@ -111,6 +120,7 @@ namespace HterGame
                                 current_hero.wind_magic -= 2;
                                 current_hero.earth_magic += 1;
                             }
+                            Notification.RemainPower(current_hero);
                             break;
                         
                         case 3:
@@ -122,6 +132,7 @@ namespace HterGame
                                 current_hero.earth_magic -= 3;
                                 current_hero.holy_magic += 1;
                             }
+                            Notification.RemainPower(current_hero);
                             break;
                         case 4:
                             if(current_hero.wind_magic < 3) {
@@ -132,6 +143,7 @@ namespace HterGame
                                 current_hero.wind_magic -= 3;
                                 current_hero.holy_magic += 1;
                             }
+                            Notification.RemainPower(current_hero);
                             break;
 
                         default:
@@ -142,14 +154,14 @@ namespace HterGame
             }
         }
     }
-    public class Normal_Game_Play {
+    public class Normal_Game_Play { // Normal Game Mode
         private Hero hero;
-        private Monster[] monsters;
-        private int ground_monsters;
-        private int flying_monsters;
+        private Monster[] monsters; // array of monsters
+        private int ground_monsters; // number of ground monsters
+        private int flying_monsters; // number of flying monsters
         private bool isExit;
-        private int killed_monsters;
-        public Normal_Game_Play(int hero_power = 2, int ground_monsters = 2, int flying_monsters = 2) {
+        private int killed_monsters; // number of killed monsters
+        public Normal_Game_Play(int hero_power = 2, int ground_monsters = 2, int flying_monsters = 2) { // Constructor for new game
             this.ground_monsters = ground_monsters;
             this.flying_monsters = flying_monsters;
             this.hero = new Hero(hero_power, hero_power);
@@ -158,7 +170,7 @@ namespace HterGame
             this.killed_monsters = 0;
         }
 
-        public void Game_Run() {
+        public void Game_Run() { // Real Game Running
             for(int round=0; round < monsters.Length; round++) {
                 Monster current_monster = monsters[round];
                 if((round + 1) % Game_Setting.GetCycleLength() == 0) {
@@ -175,7 +187,7 @@ namespace HterGame
                 if(hero.HP <= 0) break;
             }
 
-            if(!isExit) {
+            if(!isExit) { // Exit game
                 if(hero.HP <= 0) Notification.ResultNotification(1, killed_monsters);
                 else Notification.ResultNotification(0, killed_monsters);
             }
